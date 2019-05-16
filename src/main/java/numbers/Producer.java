@@ -17,6 +17,11 @@ public class Producer {
         config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 
         // TODO: Implement me. Send each message from SecretRadio.listen() to local kafka (config above)
+        KafkaProducer<String, Message> producer = new KafkaProducer<String, Message>(config, new StringSerializer(), new JsonSerializer<>());
+        for (Message message: SecretRadio.listen()) {
+            producer.send(new ProducerRecord<>("radio-logs", message.getName(), message));
+        }
+        producer.close();
 
         System.out.println("Finished producing to radio-logs topic!");
     }

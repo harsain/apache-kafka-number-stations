@@ -1,5 +1,6 @@
 package numbers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.serialization.Serializer;
 import org.slf4j.Logger;
@@ -11,6 +12,8 @@ public class JsonSerializer<T> implements Serializer<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonDeserializer.class);
 
+    ObjectMapper objectMapper = new ObjectMapper();
+
     @Override
     public void configure(Map map, boolean b) {
     }
@@ -18,9 +21,13 @@ public class JsonSerializer<T> implements Serializer<T> {
     @Override
     public byte[] serialize(String topic, T o) {
         byte[] retVal = null;
-        ObjectMapper objectMapper = new ObjectMapper();
 
         // TODO: Implement me. Use the object mapper to turn types into bytes
+        try {
+            retVal = objectMapper.writeValueAsBytes(o);
+        } catch (JsonProcessingException e) {
+            System.out.println("unable tp convert to bytes " + e.getMessage());
+        }
 
         return retVal;
     }
